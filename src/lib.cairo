@@ -17,7 +17,9 @@ pub trait ISimpleStorageContract<TContractState> {
 mod SimpleStorageContract {
     
 
-    #[storage]
+    use starknet::storage::StoragePointerReadAccess;
+use starknet::storage::StoragePointerWriteAccess;
+#[storage]
     struct Storage {
         student_name: ByteArray,
         student_age: u16,
@@ -27,13 +29,13 @@ mod SimpleStorageContract {
     impl SimpleStorageContractImpl of super::ISimpleStorageContract<ContractState> {
         fn update_student_data(ref self: ContractState, name: ByteArray, age: u16) {
             // Update storage variables directly
-            self.storage.student_name = name;
-            self.storage.student_age = age;
+            self.student_name.write(name);
+            self.student_age.write(age);
         }
 
         fn retrieve_student_data(self: @ContractState) -> (ByteArray, u16) {
             // Read storage variables directly
-            (self.storage.student_name, self.storage.student_age)
+            (self.student_name.read(), self.student_age.read())
         }
     }
 }
